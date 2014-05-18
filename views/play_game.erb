@@ -1,0 +1,71 @@
+
+
+<h4>Welcome <%= session[:player_name] %>! Lets Play Blackjack</h4> <br/>
+
+<% player = Marshal.load(session[:player]) %>
+<% dealer = Marshal.load(session[:dealer]) %>
+
+<div class="well">
+<h5> <%= session[:player_name] %>'s Cards </h5>
+
+<br/>
+	<% player.cards.each do |card| %>
+	<img class="card" src="<%= get_image_name(card) %> " alt="<%= card.to_s %>">
+	<% end %>
+	<br/>
+	<br/>
+</div>
+
+<h5> TOTAL Score: <%= player.total_score %> </h5>
+
+<% if @show_player_buttons %>
+
+  <form id="hit_form" action="/player/game/hit" method="post">
+  <input type="submit" value="Hit" class="btn btn-success">
+  </form>
+
+  <form id="stay_form" action="/player/game/stay" method="post"/>
+  <input type="submit" value="Stay" class="btn btn-warning">
+  </form>
+
+<%end%>
+
+
+
+<br/> <br/>
+
+<div class="well">
+	<h5> Dealer's Cards </h5>
+
+	<br/>
+	<% dealer.cards.each_index do |i| %>
+		<% if i == 0 && !@show_dealer_first_card %>
+			<img class="card" src="/images/cards/cover.jpg" alt="<cover>">
+		<% else %>
+			<img class="card" src="<%= get_image_name(dealer.cards[i]) %> " alt="<%= dealer.cards[i].to_s %>">
+		<% end %>
+	<% end %>
+	<br/>
+	<br/>
+</div>
+
+
+<% if @show_dealer_first_card %>
+	<h5> TOTAL Score: <%= dealer.total_score %> </h5>
+<%end%>
+
+<% if @show_dealer_buttons %>
+
+  <form action="/dealer/game/hit" method="post">
+  <input type="submit" value="Dealer Next Card" class="btn btn-success">
+  </form>
+
+<%end%>
+
+<br/> <br/>
+
+<form action="/player/game" method="get">
+  <input type="submit" value="New Game" class="btn">
+</form>
+
+
