@@ -1,0 +1,10 @@
+<% player = Marshal.load(session[:player]) %>
+
+<h3>Please enter a bet for this round:</h3>
+
+<form id="bet_form" action="/player/bet" method="post">
+  <input type="number" name="player_bet"/><br>
+  <input type="submit" value="Submit Bet" class="btn btn-inverse"/>
+</form>
+
+<%= player.name %>'s <strong>Funds:</strong> £<%= player.funds %> 

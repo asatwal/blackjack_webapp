@@ -7,11 +7,13 @@ class Player
 
   attr_accessor :name
   attr_accessor :cards
+  attr_accessor :funds
 
 
   def initialize(name)
     @cards = []
     @name = name
+    @funds = CardGameUtils::PLAYER_INITIAL_FUNDS
   end
 
 
@@ -21,6 +23,13 @@ class Player
       @cards[0] = card
     else
       @cards.push(card)
+    end
+  end
+
+  def clear_cards
+
+    if !@cards.empty?
+      @cards.clear
     end
   end
 

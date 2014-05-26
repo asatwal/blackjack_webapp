@@ -1,11 +1,27 @@
 
-form#hit_form {
+form#player_hit_form {
 	float:left;
 	margin-right:10px;
 }
 
-form#stay_form {
+form#player_stay_form {
 	float:left;
+	margin-right:20px;
+}
+
+form#play_again_form {
+	float:left;
+	margin-right:20px;
+}
+
+form#new_game_form {
+	float:left;
+	margin-right:20px;
+}
+
+form#bet_form {
+	float:left;
+	margin-right:20px;
 }
 
 img.card {

@@ -1,71 +1,106 @@
 
-
-<h4>Welcome <%= session[:player_name] %>! Lets Play Blackjack</h4> <br/>
-
 <% player = Marshal.load(session[:player]) %>
 <% dealer = Marshal.load(session[:dealer]) %>
 
-<div class="well">
-<h5> <%= session[:player_name] %>'s Cards </h5>
 
-<br/>
-	<% player.cards.each do |card| %>
-	<img class="card" src="<%= get_image_name(card) %> " alt="<%= card.to_s %>">
-	<% end %>
-	<br/>
-	<br/>
+<div id="play_game">
+  <div class="container">
+      <%if @winner_msg %>
+        <div class="alert alert-success"><%=@winner_msg%></div>
+      <%elsif @loser_msg %>
+        <div class="alert alert-error"><%=@loser_msg%></div>
+      <%elsif @player_msg %>
+        <div class="alert alert-success"><%=@player_msg%></div>     
+      <% end %>
+  </div>
+
+  <h4>Welcome <%= player.name %>! Lets Play Blackjack</h4> <br/>
+
+  <div class="well">
+  <h5> <%= player.name %>'s Cards </h5>
+
+  <br/>
+  	<% player.cards.each do |card| %>
+  	<img class="card" src="<%= get_image_name(card) %> " alt="<%= card.to_s %>">
+  	<% end %>
+  	<br/>
+  	<br/>
+  </div>
+
+  <h5> TOTAL Score: <%= player.total_score %>  </h5>
+
+
+  <% if @player_turn %>
+
+    <form id="player_hit_form" action="/player/game/hit" method="post">
+    <input type="submit" value="Hit" class="btn btn-success">
+    </form>
+
+    <form id="player_stay_form" action="/player/game/stay" method="post">
+    <input type="submit" value="Stay" class="btn btn-warning">
+    </form>
+
+  <%end%>
+
+  <% if @player_turn || @dealer_turn %>
+
+    <%= player.name %>'s <strong>Funds:</strong> £<%= player.funds %>    <strong>Bet:</strong> £<%= session[:player_bet].to_i %><br/>
+
+  <%end%>
+
+
+  <br/> <br/>
+
+  <div class="well">
+  	<h5> Dealer's Cards </h5>
+
+  	<br/>
+  	<% dealer.cards.each_with_index do |card, i| %>
+  		<% if i == 0 && @player_turn %>
+  			<img class="card" src="/images/cards/cover.jpg" alt="cover">
+  		<% else %>
+  			<img class="card" src="<%= get_image_name(card) %> " alt="<%= card.to_s %>">
+  		<% end %>
+  	<% end %>
+  	<br/>
+  	<br/>
+  </div>
+
+
+  <% if !@player_turn %>
+  	<h5> TOTAL Score: <%= dealer.total_score %> </h5>
+  <%end%>
+
+  <% if @dealer_turn %>
+
+    <form id="dealer_hit_form" action="/dealer/game/hit" method="post">
+    <input type="submit" value="Dealer Next Card ->" class="btn btn-success">
+    </form>
+
+  <%end%>
+
+  <br/> <br/>
+
+
+  <% if !@player_turn && !@dealer_turn %>
+
+    <% if player.funds > 0 %>
+
+      <form id="play_again_form" action="/player/bet" method="get">
+        <input type="submit" value="Play Again" class="btn btn-inverse"/>
+      </form>
+
+      <%= player.name %>'s <strong>Funds:</strong> £<%= player.funds %>  (Bet: £<%= session[:player_bet].to_i %>)
+
+    <%else%>
+
+      <form id="new_game_form" action="/player/game/new" method="get">
+        <input type="submit" value="New Game" class="btn btn-inverse"/>
+      </form>
+
+      Sorry <%= player.name %> you've lost all your money!  (Bet: £<%= session[:player_bet].to_i %>)
+
+    <%end%>
+
+  <%end%>
 </div>
-
-<h5> TOTAL Score: <%= player.total_score %> </h5>
-
-<% if @show_player_buttons %>
-
-  <form id="hit_form" action="/player/game/hit" method="post">
-  <input type="submit" value="Hit" class="btn btn-success">
-  </form>
-
-  <form id="stay_form" action="/player/game/stay" method="post"/>
-  <input type="submit" value="Stay" class="btn btn-warning">
-  </form>
-
-<%end%>
-
-
-
-<br/> <br/>
-
-<div class="well">
-	<h5> Dealer's Cards </h5>
-
-	<br/>
-	<% dealer.cards.each_index do |i| %>
-		<% if i == 0 && !@show_dealer_first_card %>
-			<img class="card" src="/images/cards/cover.jpg" alt="<cover>">
-		<% else %>
-			<img class="card" src="<%= get_image_name(dealer.cards[i]) %> " alt="<%= dealer.cards[i].to_s %>">
-		<% end %>
-	<% end %>
-	<br/>
-	<br/>
-</div>
-
-
-<% if @show_dealer_first_card %>
-	<h5> TOTAL Score: <%= dealer.total_score %> </h5>
-<%end%>
-
-<% if @show_dealer_buttons %>
-
-  <form action="/dealer/game/hit" method="post">
-  <input type="submit" value="Dealer Next Card" class="btn btn-success">
-  </form>
-
-<%end%>
-
-<br/> <br/>
-
-<form action="/player/game" method="get">
-  <input type="submit" value="New Game" class="btn">
-</form>
-
-
