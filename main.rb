@@ -8,7 +8,13 @@ require_relative 'card_game_utils.rb'
 require_relative 'player.rb'
 require_relative 'card.rb'
 
-set :sessions, true
+
+# Fix chrome problem with POST RequestsA
+# Remove set :sessions line and add line starting use Rack...
+# set :sessions, true
+use Rack::Session::Cookie, key:    'rack.session',
+                           path:   '/',
+                           secret: 'blackjack_app'
 
 helpers do
 
